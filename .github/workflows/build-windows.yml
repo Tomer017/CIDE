@@ -137,6 +137,10 @@ jobs:
 
       - name: Prepare assets
         if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.generate_assets == 'true'
+        env:
+          SHOULD_BUILD_REH: "no"
+          SHOULD_BUILD_REH_WEB: "no"
+          SHOULD_BUILD_CLI: "no"
         run: ./prepare_assets.sh
 
       - name: Upload installer
