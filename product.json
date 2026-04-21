@@ -1,4 +1,11 @@
 {
+  "configurationDefaults": {
+    "editor.formatOnSave": true,
+    "clangd.arguments": ["--background-index", "--clang-tidy"],
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "editor.inlayHints.enabled": "on",
+    "files.associations": { "*.h": "c" }
+  },
   "extensionAllowedBadgeProviders": [
     "api.bintray.com",
     "api.travis-ci.com",
@@ -501,131 +508,47 @@
     ]
   },
   "extensionVirtualWorkspacesSupport": {
-    "esbenp.prettier-vscode": {
-      "default": false
-    },
-    "msjsdiag.debugger-for-chrome": {
-      "default": false
-    },
-    "redhat.java": {
-      "default": false
-    },
-    "HookyQR.beautify": {
-      "default": false
-    },
-    "ritwickdey.LiveServer": {
-      "default": false
-    },
-    "VisualStudioExptTeam.vscodeintellicode": {
-      "default": false
-    },
-    "octref.vetur": {
-      "default": false
-    },
-    "formulahendry.code-runner": {
-      "default": false
-    },
-    "xdebug.php-debug": {
-      "default": false
-    },
-    "ms-mssql.mssql": {
-      "default": false
-    },
-    "christian-kohler.path-intellisense": {
-      "default": false
-    },
-    "eg2.tslint": {
-      "default": false
-    },
-    "eg2.vscode-npm-script": {
-      "default": false
-    },
-    "donjayamanne.githistory": {
-      "default": false
-    },
-    "Zignd.html-css-class-completion": {
-      "default": false
-    },
-    "christian-kohler.npm-intellisense": {
-      "default": false
-    },
-    "EditorConfig.EditorConfig": {
-      "default": false
-    },
-    "austin.code-gnu-global": {
-      "default": false
-    },
-    "johnpapa.Angular2": {
-      "default": false
-    },
-    "ms-vscode.vscode-typescript-tslint-plugin": {
-      "default": false
-    },
-    "DotJoshJohnson.xml": {
-      "default": false
-    },
-    "techer.open-in-browser": {
-      "default": false
-    },
-    "tht13.python": {
-      "default": false
-    },
-    "bmewburn.vscode-intelephense-client": {
-      "default": false
-    },
-    "Angular.ng-template": {
-      "default": false
-    },
-    "xdebug.php-pack": {
-      "default": false
-    },
-    "dbaeumer.jshint": {
-      "default": false
-    },
-    "yzhang.markdown-all-in-one": {
-      "default": false
-    },
-    "Dart-Code.flutter": {
-      "default": false
-    },
-    "streetsidesoftware.code-spell-checker": {
-      "default": false
-    },
-    "rebornix.Ruby": {
-      "default": false
-    },
-    "ms-vscode.sublime-keybindings": {
-      "default": false
-    },
-    "mitaki28.vscode-clang": {
-      "default": false
-    },
-    "steoates.autoimport": {
-      "default": false
-    },
-    "donjayamanne.python-extension-pack": {
-      "default": false
-    },
-    "shd101wyy.markdown-preview-enhanced": {
-      "default": false
-    },
-    "mikestead.dotenv": {
-      "default": false
-    },
-    "pranaygp.vscode-css-peek": {
-      "default": false
-    },
-    "ikappas.phpcs": {
-      "default": false
-    },
-    "platformio.platformio-ide": {
-      "default": false
-    },
-    "jchannon.csharpextensions": {
-      "default": false
-    },
-    "gruntfuggly.todo-tree": {
-      "default": false
-    }
+    "esbenp.prettier-vscode": { "default": false },
+    "msjsdiag.debugger-for-chrome": { "default": false },
+    "redhat.java": { "default": false },
+    "HookyQR.beautify": { "default": false },
+    "ritwickdey.LiveServer": { "default": false },
+    "VisualStudioExptTeam.vscodeintellicode": { "default": false },
+    "octref.vetur": { "default": false },
+    "formulahendry.code-runner": { "default": false },
+    "xdebug.php-debug": { "default": false },
+    "ms-mssql.mssql": { "default": false },
+    "christian-kohler.path-intellisense": { "default": false },
+    "eg2.tslint": { "default": false },
+    "eg2.vscode-npm-script": { "default": false },
+    "donjayamanne.githistory": { "default": false },
+    "Zignd.html-css-class-completion": { "default": false },
+    "christian-kohler.npm-intellisense": { "default": false },
+    "EditorConfig.EditorConfig": { "default": false },
+    "austin.code-gnu-global": { "default": false },
+    "johnpapa.Angular2": { "default": false },
+    "ms-vscode.vscode-typescript-tslint-plugin": { "default": false },
+    "DotJoshJohnson.xml": { "default": false },
+    "techer.open-in-browser": { "default": false },
+    "tht13.python": { "default": false },
+    "bmewburn.vscode-intelephense-client": { "default": false },
+    "Angular.ng-template": { "default": false },
+    "xdebug.php-pack": { "default": false },
+    "dbaeumer.jshint": { "default": false },
+    "yzhang.markdown-all-in-one": { "default": false },
+    "Dart-Code.flutter": { "default": false },
+    "streetsidesoftware.code-spell-checker": { "default": false },
+    "rebornix.Ruby": { "default": false },
+    "ms-vscode.sublime-keybindings": { "default": false },
+    "mitaki28.vscode-clang": { "default": false },
+    "steoates.autoimport": { "default": false },
+    "donjayamanne.python-extension-pack": { "default": false },
+    "shd101wyy.markdown-preview-enhanced": { "default": false },
+    "mikestead.dotenv": { "default": false },
+    "pranaygp.vscode-css-peek": { "default": false },
+    "ikappas.phpcs": { "default": false },
+    "platformio.platformio-ide": { "default": false },
+    "jchannon.csharpextensions": { "default": false },
+    "gruntfuggly.todo-tree": { "default": false }
   }
 }

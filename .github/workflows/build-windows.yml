@@ -1,0 +1,156 @@
+name: Build - Windows x64
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+    paths-ignore:
+      - "**/*.md"
+  workflow_dispatch:
+    inputs:
+      generate_assets:
+        type: boolean
+        description: Force asset generation (ignored on tag pushes)
+        default: false
+
+env:
+  APP_NAME: CIDE
+  APP_NAME_LC: cide
+  ASSETS_REPOSITORY: ${{ github.repository }}
+  BINARY_NAME: cide
+  GH_REPO_PATH: ${{ github.repository }}
+  GLOBAL_DIRNAME: CIDE
+  ORG_NAME: ${{ github.repository_owner }}
+  OS_NAME: windows
+  TUNNEL_APP_NAME: cide-tunnel
+  VSCODE_QUALITY: stable
+
+permissions:
+  contents: write
+
+jobs:
+  compile:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+    env:
+      VSCODE_ARCH: x64
+    outputs:
+      BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ env.MS_COMMIT }}
+      MS_TAG: ${{ env.MS_TAG }}
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Clone VSCode repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: . get_repo.sh
+
+      - name: Download bundled extensions
+        run: ./get_extensions.sh
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHOULD_BUILD: "yes"
+          SHOULD_BUILD_REH: "no"
+          SHOULD_BUILD_REH_WEB: "no"
+        run: ./build.sh
+
+      - name: Compress vscode artifact
+        run: |
+          find vscode -type f \
+            -not -path "*/node_modules/*" \
+            -not -path "vscode/.build/node/*" \
+            -not -path "vscode/.git/*" > vscode.txt
+          echo "vscode/.build/extensions/node_modules" >> vscode.txt
+          echo "vscode/.git" >> vscode.txt
+          tar -czf vscode.tar.gz -T vscode.txt
+
+      - name: Upload vscode artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode
+          path: ./vscode.tar.gz
+          retention-days: 1
+
+  build:
+    needs: compile
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+    env:
+      BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ needs.compile.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.compile.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.compile.outputs.RELEASE_VERSION }}
+      VSCODE_ARCH: x64
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download vscode artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vscode
+
+      - name: Extract vscode artifact
+        run: tar -xzf vscode.tar.gz
+
+      - name: Package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_arch: x64
+          npm_config_target_arch: x64
+        run: ./build/windows/package.sh
+
+      - name: Prepare assets
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.generate_assets == 'true'
+        run: ./prepare_assets.sh
+
+      - name: Upload installer
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.generate_assets == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: CIDE-win32-x64
+          path: assets/*.exe
+          retention-days: 7
+
+      - name: Publish release assets
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: assets/*.exe
+          draft: false
+          prerelease: false
